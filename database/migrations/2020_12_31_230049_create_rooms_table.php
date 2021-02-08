@@ -19,7 +19,8 @@ class CreateRoomsTable extends Migration
             $table->double('price');
             $table->string('image');
             $table->string('description');
-            $table->boolean('state');
+            $table->enum('disponibilidad',['disponible','ocupado','check-in','check-out'])->default('disponible');
+            $table->boolean('state')->default(true);
             $table->unsignedBigInteger('type_room_id');
             $table->foreign('type_room_id')->references('id')->on('type_rooms');
             $table->timestamps();

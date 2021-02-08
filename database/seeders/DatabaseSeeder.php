@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
             "birthday" => "01/01/10",
             "email" => "CORREO3@CORREO.COM",
             "address" => "CALLE 123",
-            "type_people_id" => 2,
+            "type_people_id" => 3,
         ]);
 
         Person::create([
@@ -81,7 +81,7 @@ class DatabaseSeeder extends Seeder
             "ruc" => "1234678912",
             "business_name" => "EMPRESA SAC",
             "address" => "CALLE 123",
-            "type_people_id" => 3,
+            "type_people_id" => 2,
         ]);
 
         //CREANDO USUARIOS

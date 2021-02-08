@@ -9,6 +9,8 @@ class Offer extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function typeRoom(){
         return $this->belongsTo(TypeRoom::class);
     }

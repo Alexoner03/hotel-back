@@ -11,6 +11,28 @@ use Illuminate\Database\Eloquent\Builder;
 class ClientController extends Controller
 {
 
+    public function listAllMapped(){
+        $clients = Client::where('state',true)->whereHas('person', function (Builder $query) {
+            $query->whereIn('type_people_id',[2,3]);
+        })
+        ->with('person','person.typePeople','person.client')
+        ->get();
+
+        $mapped = array();
+
+        foreach ($clients as $client) {
+            $obj = (object)null;
+            
+            $obj->value = $client->id;
+            $obj->label = "{$client->person->name} {$client->person->first_lastname} - DNI : {$client->person->dni}";
+
+            array_push($mapped,$obj);
+            
+        }
+        return response()->json($mapped);
+
+    }
+
     public function listNormalClients(){
         $clients = Client::where('state',true)->whereHas('person', function (Builder $query) {
             $query->where('type_people_id',3);
@@ -51,7 +73,7 @@ class ClientController extends Controller
             'email'             => 'email|required|unique:App\Models\Person,email',
             'address'           => 'required|string',
             'type_people_id'    => 'numeric|required|min:2|max:3',
-            'ruc'               => 'required_if:type_people_id,2|regex:/^[0-9]{11}+$/',
+            'ruc'               => 'required_if:type_people_id,2|regex:/^[0-9]{11}+$/|unique:App\Models\Person,ruc',
             'business_name'     => 'required_if:type_people_id,2|string'
         ]);
 
@@ -83,14 +105,11 @@ class ClientController extends Controller
             'name'              => 'string|min:3|required',
             'sex'               => 'string|required|in:M,F',
             'cellphone'         => 'required|regex:/^9[0-9]{8}+$/',
-            'dni'               => 'required|regex:/^[0-9]{8}+$/|unique:App\Models\Person,dni',
             'first_lastname'    => 'string|required',
             'second_lastname'   => 'string|required',
             'birthday'          => 'date|required',
-            'email'             => 'email|required|unique:App\Models\Person,email',
             'address'           => 'required|string',
             'type_people_id'    => 'numeric|required|min:2|max:3',
-            'ruc'               => 'required_if:type_people_id,2|regex:/^[0-9]{11}+$/',
             'business_name'     => 'required_if:type_people_id,2|string'
         ]);
 
@@ -98,15 +117,6 @@ class ClientController extends Controller
         $person = Person::where('id',$id)->first();
         $person->update($fields);
 
-
-        //CREANDO USUARIOS
-        User::where('people_id', $person->id)
-        ->first()
-        ->update([
-            "password" => Hash::make($fields['dni']),
-            "user_name" => $person->email,
-            "people_id" => $person->id,
-        ]);
 
         return response()->json([
             'res' => true,

@@ -78,7 +78,6 @@ class EmployeeController extends Controller
             'name'              => 'string|min:3|required',
             'sex'               => 'string|required|in:M,F',
             'cellphone'         => 'required|regex:/^9[0-9]{8}+$/',
-            'dni'               => 'required|regex:/^[0-9]{8}+$/',
             'first_lastname'    => 'string|required',
             'second_lastname'   => 'string|required',
             'birthday'          => 'date|required',
@@ -98,14 +97,6 @@ class EmployeeController extends Controller
         $person = Person::where('id',$id)->first();
         $person->update($fields);
 
-        //CREANDO USUARIOS
-        User::where('people_id', $person->id)
-        ->first()
-        ->update([
-            "password" => Hash::make($fields['dni']),
-            "user_name" => $person->email,
-            "people_id" => $person->id,
-        ]);
 
         return response()->json([
             'res' => true,

@@ -77,11 +77,19 @@ class UserController extends Controller
     }
 
     public function getMyData(){
-        $user =  auth()->user();
+        $user = User::where('people_id',auth()->user()->id)->with('person')->first();
+        $detail = null;
+        if($user->person->type_people_id === 1){
+            $detail = Employee::where('people_id',$user->person->id)->first();
+        }else{
+            $detail = Client::where('people_id',$user->person->id)->first();
+        }
+
 
         return response()->json([
             'res' => true,
-            'data' => $user
+            'data' => $user,
+            'detail' => $detail
         ]);
     }
 }

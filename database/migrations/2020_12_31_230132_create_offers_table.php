@@ -19,6 +19,7 @@ class CreateOffersTable extends Migration
             $table->string('description');
             $table->date('from');
             $table->date('to');
+            $table->boolean('state')->default(true);
             $table->string('image');
             $table->double('price');
             $table->unsignedBigInteger('type_room_id');

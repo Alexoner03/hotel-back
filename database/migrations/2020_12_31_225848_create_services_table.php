@@ -18,7 +18,6 @@ class CreateServicesTable extends Migration
             $table->string('name')->unique();
             $table->string('description');
             $table->double('price');
-            $table->string('image');
             $table->unsignedBigInteger('type_service_id');
             $table->foreign('type_service_id')->references('id')->on('type_services');
             $table->timestamps();
